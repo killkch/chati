@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "336761507317",
+    "project_id": "chati-1f244",
+    "storage_bucket": "chati-1f244.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336761507317:android:d451b2e327d4458a63e4bc",
+        "android_client_info": {
+          "package_name": "com.cher.chati"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "336761507317-53gumujsg36inhb1dn6mo7ccikjmn0qf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVH31I8R9cCL8O_L3pjssZ9n814wKq-io"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336761507317-53gumujsg36inhb1dn6mo7ccikjmn0qf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
