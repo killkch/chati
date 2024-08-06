@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:chati/pages/chat_page.dart';
 import 'package:chati/providers/chat_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -136,7 +137,13 @@ class UserTile extends StatelessWidget {
         final chatId = await chatProvider.getChatroom(userId) ??
             await chatProvider.createChatRoom(userId);
 
-        // Get.to(() => ChatPage());
+        Get.to(
+          () => ChatPage(),
+          arguments: {
+            "chatId": chatId,
+            "receiverId": userId,
+          },
+        );
       },
     );
   }

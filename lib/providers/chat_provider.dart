@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 
 class ChatProvider extends ChangeNotifier {
   //?
@@ -40,14 +41,14 @@ class ChatProvider extends ChangeNotifier {
         "senderId": currentUser.uid,
         "receiverId": receiverId,
         "messageBody": message,
-        "timeStemp": FieldValue.serverTimestamp(),
+        "timestamp": FieldValue.serverTimestamp(),
       });
 
       await _fireStore.collection('chats').doc(chatId).set(
         {
           "users": [currentUser.uid, receiverId],
           "lastMessage": message,
-          "timeStemp": FieldValue.serverTimestamp(),
+          "timestamp": FieldValue.serverTimestamp(),
         },
         SetOptions(merge: true),
       );
@@ -79,10 +80,13 @@ class ChatProvider extends ChangeNotifier {
     final currentUser = _auth.currentUser;
 
     if (currentUser != null) {
+      // var now = DateTime.now();
+      // String formatDate = DateFormat('yyMM/dd - HH:mm:ss').format(now);
+
       final chatRoom = await _fireStore.collection('chats').add({
         'users': [currentUser.uid, receiverId],
         'lastMessage': '',
-        'timeStemp': FieldValue.serverTimestamp(),
+        "timestamp": FieldValue.serverTimestamp(),
       });
       return chatRoom.id;
     }

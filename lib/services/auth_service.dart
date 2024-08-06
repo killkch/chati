@@ -66,9 +66,11 @@ class AuthService {
         .collection("users")
         .doc(user1.user.uid)
         .set(tmpUser)
-        .whenComplete(() {
-      storageBox.write("userProfile", tmpUser);
-      print("Wenn Completed");
-    });
+        .whenComplete(
+      () {
+        storageBox.write("userProfile", tmpUser);
+        print("Wenn Completed");
+      },
+    );
   }
 }

@@ -1,10 +1,6 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_print
 
 import 'package:chati/pages/search_page.dart';
-import 'package:chati/providers/chat_provider.dart';
-import 'package:chati/providers/chat_provider.dart';
-import 'package:chati/providers/chat_provider.dart';
-import 'package:chati/providers/chat_provider.dart';
 import 'package:chati/providers/chat_provider.dart';
 import 'package:chati/services/auth_service.dart';
 import 'package:chati/widgets/chat_title.dart';
@@ -13,8 +9,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-
-import '../providers/chat_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -50,23 +44,32 @@ class _HomePageState extends State<HomePage> {
     final chatDoc =
         await FirebaseFirestore.instance.collection('chats').doc(chatId).get();
     final chatData = chatDoc.data();
+    /**
+     * chatting 정보 중 user data array 를 따로 저장한다. 
+     */
     final users = chatData!['users'] as List<dynamic>;
     /**
-     * 조건에 맞는 첫번쨰 리스트의 인자 값으르 가져온다. : firstwhere 
-     * 상대방의 정보를 가져온다.
+     * 어레이의 인자들을 한나씩 돌려가면서 조건에 맞는 첫번쨰 인자 값으르 가져온다. : firstwhere 
+     * 즉 상대방의 정보를 가져온다는 말입니다.
+     * firstWhere는 첫번쨰 조건에 맞는 지를 확인하는 메소드라 할수 있습니다. 
      */
     final receiverId = users.firstWhere((id) => id != loggedInUser!.uid);
+
     final userDoc = await FirebaseFirestore.instance
         .collection('users')
         .doc(receiverId)
         .get();
+    /**
+         * 상대방의 사용자정보를 가져온다 .
+         */
     final userData = userDoc.data()!;
-    print("userData : ${userData.toString()}");
+
+    var tmp = FieldValue.serverTimestamp();
 
     return {
       'chatId': chatId,
       'lastMessage': chatData['lastMessage'] ?? '',
-      'timeStemp': chatData['timeStemp']?.toString() ?? DateTime.now(),
+      'timestamp': chatData['timestamp'] ?? DateTime.now(),
       'userData': userData,
     };
   }
@@ -108,7 +111,8 @@ class _HomePageState extends State<HomePage> {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  final chatDocs = snapshot.data!.docs;
+                  final chattingDocs = snapshot.data!.docs;
+
                   return FutureBuilder<List<Map<String, dynamic>>>(
                     /** 
                      * 페이지를 처음 로딩할 때 많은 정보를 불러오는 경우가 있습니다. 
@@ -125,14 +129,20 @@ class _HomePageState extends State<HomePage> {
                      * map 메소드는 iterable를 대상으로 foreach을 한 번 돌려주는 것이다.
                      */
                     future: Future.wait(
-                        chatDocs.map((chatDoc) => _fetchChatData(chatDoc.id))),
+                      chattingDocs.map(
+                        (chatDoc) => _fetchChatData(chatDoc.id),
+                      ),
+                    ),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return Center(
                           child: CircularProgressIndicator(),
                         );
                       }
+
                       final chatDataList = snapshot.data!;
+                      print("101...chatDataList ...${chatDataList.toString()}");
+
                       return ListView.builder(
                         itemCount: chatDataList.length,
                         itemBuilder: (context, index) {
@@ -140,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                           return ChatTitle(
                             chatId: chatData['chatId'],
                             lastMessage: chatData['lastMessage'],
-                            timestemp: chatData['timeStemp'],
+                            timestamp: chatData['timestamp'],
                             receiverData: chatData['userData'],
                           );
                         },
